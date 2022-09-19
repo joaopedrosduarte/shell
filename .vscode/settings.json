@@ -1,0 +1,23 @@
+{
+    "files.associations": {
+        "*html": "html",
+        ".sequelizerc": "javascript",
+        ".stylelintrc": "json",
+        "*.tsx": "typescriptreact",
+        ".env.*": "dotenv",
+        ".prettierrc": "json",
+        "*.jsx": "javascriptreact",
+        "*.css": "css",
+        "css": "css",
+        "styles.h": "c",
+        "string.h": "c",
+        "models.h": "c",
+        "stdio.h": "c",
+        "unistd.h": "c",
+        "wait.h": "c",
+        "__config": "c",
+        "stdlib.h": "c",
+        "_stdio.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
+}

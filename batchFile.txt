@@ -1,0 +1,10 @@
+ls -a; ls -b; ls -c; ls -d; ls -e; ls -f; ls -g; ls -h; ls -i
+ERROR
+ls -a; ls -b; ls -c; ls -d; ls -e; ls -f; ls -g; ls -h
+ERROR
+ls -a; ls -b; ls -c; ls -d; ls -e; ls -f; ls -g
+ERROR 
+ls -a; ls -b; ls -c; ls -d; ls -e; ls -f
+ERROR
+ls -a; ls -b; ls -c; ls -d; ls -e
+NOT ERROR
