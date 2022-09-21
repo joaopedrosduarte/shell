@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "formatArgs.h"
 
 int formatArgs(int max,char *args, char *arrayArgs[max/2+1]){
     char *slice;

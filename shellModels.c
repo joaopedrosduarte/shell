@@ -12,19 +12,27 @@
 #define BASH 1
 #define INTERACTIVE 0
 
-int shell(int model)
+int shell(int model, char *fileName)
 {
     int shouldRun = 1;
+    FILE *arq;
     char line[MAX_LINE];
+    int lock = 1;
     int style;
-    char c;
-    int argsLen;
     char styleHead[] = "seq";
     char *args[MAX_LINE/2 + 1];
+    setDeliver(0);
+
+    arq = fopen(fileName,"r");
 
     while (shouldRun == 1)
     {
+        if (getDeliver() == 1){
+            lock = 0;
+        }
+
         style = getStyle();
+        strcpy(line,"");
 
         if (style == SEQUENTIAL){
             strcpy(styleHead,"seq");
@@ -33,41 +41,45 @@ int shell(int model)
         }
 
         //printf("( Model : %d - style : %d - should run : %d - StyleHead : %s )\n",model, style, shouldRun, styleHead);
-
-        printf("jpds %s> ",styleHead);
         fflush(stdout);
         if (model == INTERACTIVE){
-            fgets(line,40,stdin);
-            while(line[0] == '\n'){
-                printf("jpds %s> ",styleHead);
-                fgets(line,40,stdin);
+            printf("jpds %s> ",styleHead);
+            if (fgets(line,MAX_LINE/2+1,stdin)){
+                while(line[0] == '\n'){
+                    printf("jpds %s> ",styleHead);
+                    fgets(line,MAX_LINE/2+1,stdin);
+                }
             }
-        } 
-        else if (model == BASH){
-        /* 
-            TODO:   LEITURA DE ARQUIVO
-        */
         }
-        
-        int const argsLen = arrayCleaning(line, args);
-
-        for (int i = 0;i < argsLen;i++){
-            printf("(%s)\n",args[i]);
+        else if (model == BASH && lock == 1){
+            printf("jpds %s> ",styleHead);
+            fgets(line,MAX_LINE/2+1,arq);
+            if (line[0] == EOF){
+                lock = 0;
+            } 
+            else if (line[strlen(line)-1] == '\0'){
+                setDeliver(1);
+            }
         }
 
-        for (int i = 0;i < argsLen;i++){
-            char atualArrayArgs[MAX_LINE/2+1];
-            char *newArrayArgs[MAX_LINE/2+1];
-            strcpy(atualArrayArgs,args[i]);
+        if (shouldRun == 1 && lock == 1) {
+            int const argsLen = arrayCleaning(line, args);
 
-            int newArgsLen = formatArgs(MAX_LINE, atualArrayArgs, newArrayArgs);
+            for (int i = 0;i < argsLen;i++){
+                char atualArrayArgs[MAX_LINE/2+1];
+                char *newArrayArgs[MAX_LINE/2+1];
+                strcpy(atualArrayArgs,args[i]);
 
-            if (style == SEQUENTIAL){
-                shouldRun = sequential(MAX_LINE, newArrayArgs, newArgsLen, 0);
-            } else {
-                shouldRun = parallel(args, argsLen, 0);
+                int newArgsLen = formatArgs(MAX_LINE, atualArrayArgs, newArrayArgs);
+
+                if (style == SEQUENTIAL){
+                    shouldRun = sequential(MAX_LINE, newArrayArgs, newArgsLen, 0);
+                } else {
+                    shouldRun = parallel(MAX_LINE, newArrayArgs, newArgsLen, 0);
+                }
             }
         }
     }
+
     return 0;
 }

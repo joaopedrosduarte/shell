@@ -2,3 +2,9 @@
 int setStyle(int valor);
 //Função para acessar o valor da variavel style
 int getStyle();
+//Verifica se o arquivo pode ser aberto ou existe
+int isArqAvaiable(FILE *arq, char *array);
+
+int getDeliver();
+
+int setDeliver();

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "values.h"
+#include "arrayCleaning.h"
 
 int arrayCleaning(char cmd[41], char *args[41])
 {
@@ -24,13 +26,14 @@ int arrayCleaning(char cmd[41], char *args[41])
             i++;
     }
 
-    while (lock != 0)
-    {
-        if (args[i-1][n] == '\n'){
-            args[i-1][n] = '\0';
-            lock = 0;
+    if (!getDeliver()){
+        if (args[i-1][strlen(args[i-1])-1] == '\n' && getDeliver() == 0){
+            args[i-1][strlen(args[i-1])-1] = '\0';
         }
-        n++;
+    }
+
+    if(getDeliver()){
+        i--;
     }
 
     for (int j = 0;j < i;j++)

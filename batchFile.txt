@@ -1,10 +1,6 @@
-ls -a; ls -b; ls -c; ls -d; ls -e; ls -f; ls -g; ls -h; ls -i
-ERROR
-ls -a; ls -b; ls -c; ls -d; ls -e; ls -f; ls -g; ls -h
-ERROR
-ls -a; ls -b; ls -c; ls -d; ls -e; ls -f; ls -g
-ERROR 
-ls -a; ls -b; ls -c; ls -d; ls -e; ls -f
-ERROR
-ls -a; ls -b; ls -c; ls -d; ls -e
-NOT ERROR
+ls -a; pwd; echo 1
+sleep 2; ps; echo 2
+echo 1; pwd; echo 3
+echo 4; echo 5; echo 6
+echo 7; style parallel
+exit
