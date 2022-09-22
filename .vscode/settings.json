@@ -17,7 +17,9 @@
         "wait.h": "c",
         "__config": "c",
         "stdlib.h": "c",
-        "_stdio.h": "c"
+        "_stdio.h": "c",
+        "arraycleaning.h": "c",
+        "values.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

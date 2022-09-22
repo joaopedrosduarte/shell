@@ -1,6 +1,8 @@
-ls -a; pwd; echo 1
-sleep 2; ps; echo 2
-echo 1; pwd; echo 3
-echo 4; echo 5; echo 6
-echo 7; style parallel
-exit
+ls -a; pwd; echo 1; sleep 4
+sleep 2; ps; echo 2; sleep 4
+echo 1; pwd; echo 3; sleep 4
+echo 6; echo 7; echo 8; sleep 4
+echo 11; echo 12; echo 13; sleep 4
+echo 14; style parallel; sleep 4
+echo 15; echo 16; echo 17; sleep 4
+ls; pwd; exit

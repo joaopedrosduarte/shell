@@ -5,9 +5,10 @@
 #include <sys/wait.h>
 #include "styles.h"
 #include "values.h"
+#include "formatArgs.h"
 
 int sequential(int max, char *args[max/2+1], int argsLen, int current);
-int parallel(int max, char *args[max/2+1], int argsLen, int current);
+int parallel(int max, char *args[max/2+1], int argsLen,int current);
 
 int sequential(int max,char *args[max/2+1], int argsLen, int current)
 {
@@ -44,35 +45,55 @@ int sequential(int max,char *args[max/2+1], int argsLen, int current)
     return 1;
 }
 
-int parallel(int max,char *args[max/2+1], int argsLen, int current)
+int parallel(int max,char *args[max/2+1], int argsLen,int current)
 {
-    if (strcmp(args[current],"exit") == 0){
-        return 0;
-    }
-    else if (strcmp(args[current],"style") == 0){
-        current++;
-        if (strcmp(args[current],"sequential") == 0){
-            setStyle(0);
-        } 
-        else if (strcmp(args[current],"parallel") == 0){
+    pid_t pid;
+    int backup = -1;
+    char *commandsOutFork;
+
+    char atualArrayArgs[max/2+1];
+    char *newArrayArgs[max/2+1];
+
+    strcpy(atualArrayArgs,args[0]);
+
+    formatArgs(max, atualArrayArgs, newArrayArgs);
+
+    if (strcmp(newArrayArgs[0],"exit") == 0){
+        return 0; 
+    } 
+    else if (strcmp(newArrayArgs[0],"style") == 0){
+        if (strcmp(newArrayArgs[1],"parallel") == 0){
             setStyle(1);
-        } else {
-            printf("Style invalido\n");
+        }
+        else if (strcmp(newArrayArgs[1],"sequential") == 0){
+            setStyle(0);
         }
     } else {
-        pid_t pid;
-        pid = fork();
+        for (int i = 0;i < argsLen;i++)
+        {
+            backup++;
+            pid = fork();
+            if (pid < 0){
+                /*
+                TODO: TRATAMENTO DE ERRO PID
+                */
+            } 
+            else if (pid == 0){
+                char atualArrayArgs[max/2+1];
+                char *newArrayArgs[max/2+1];
+                strcpy(atualArrayArgs,args[backup]);
 
-        if (pid < 0){
-            /*
-            TODO: TRATAMENTO DE ERROS 
-            */
-        } 
-        else if (pid == 0){ // Child Process
-                execvp(args[current],args);
+                formatArgs(max, atualArrayArgs, newArrayArgs);
+
+                execvp(newArrayArgs[0],newArrayArgs);
                 exit(pid);
-        } else { // Parent process
-            wait(NULL);
+            } 
+        }   
+
+        for (int i = 0;i < argsLen;i++){
+            if (pid > 0){
+                wait(NULL);
+            }
         }
     }
 

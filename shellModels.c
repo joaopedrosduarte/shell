@@ -18,7 +18,6 @@ int shell(int model, char *fileName)
     FILE *arq;
     char line[MAX_LINE];
     int lock = 1;
-    int style;
     char styleHead[] = "seq";
     char *args[MAX_LINE/2 + 1];
     setDeliver(0);
@@ -31,12 +30,11 @@ int shell(int model, char *fileName)
             lock = 0;
         }
 
-        style = getStyle();
         strcpy(line,"");
 
-        if (style == SEQUENTIAL){
+        if (getStyle() == SEQUENTIAL){
             strcpy(styleHead,"seq");
-        } else if (style == PARALLEL) {
+        } else if (getStyle() == PARALLEL) {
             strcpy(styleHead,"par");
         }
 
@@ -64,20 +62,20 @@ int shell(int model, char *fileName)
 
         if (shouldRun == 1 && lock == 1) {
             int const argsLen = arrayCleaning(line, args);
+            if (getStyle() == SEQUENTIAL)
+            {    
+                for (int i = 0;i < argsLen;i++){
+                    char atualArrayArgs[MAX_LINE/2+1];
+                    char *newArrayArgs[MAX_LINE/2+1];
+                    strcpy(atualArrayArgs,args[i]);
 
-            for (int i = 0;i < argsLen;i++){
-                char atualArrayArgs[MAX_LINE/2+1];
-                char *newArrayArgs[MAX_LINE/2+1];
-                strcpy(atualArrayArgs,args[i]);
-
-                int newArgsLen = formatArgs(MAX_LINE, atualArrayArgs, newArrayArgs);
-
-                if (style == SEQUENTIAL){
+                    int newArgsLen = formatArgs(MAX_LINE, atualArrayArgs, newArrayArgs);
+                    
                     shouldRun = sequential(MAX_LINE, newArrayArgs, newArgsLen, 0);
-                } else {
-                    shouldRun = parallel(MAX_LINE, newArrayArgs, newArgsLen, 0);
                 }
-            }
+            } else {
+                shouldRun = parallel(MAX_LINE, args, argsLen, 0);
+            }     
         }
     }
 

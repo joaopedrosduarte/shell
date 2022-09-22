@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include "values.h"
 
-int STYLE = 0;
+int STYLE = 1;
 int DELIVER;
+int *LAST_COMAND;
 
 int isArqAvaiable(FILE *arq,char *array){
     if ((arq = fopen(array,"r"))){
