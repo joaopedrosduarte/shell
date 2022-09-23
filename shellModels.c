@@ -59,6 +59,7 @@ int shell(int model, char *fileName)
                 setDeliver(1);
             }
         }
+        printf("%s\n",line);
 
         if (shouldRun == 1 && lock == 1) {
             int const argsLen = arrayCleaning(line, args);

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "values.h"
 
-int STYLE = 1;
+int STYLE = 0;
 int DELIVER;
 int *LAST_COMAND;
 
