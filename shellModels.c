@@ -53,22 +53,34 @@ int shell(int model, char *fileName)
             printf("jpds %s> ",styleHead);
             fgets(line,MAX_LINE/2+1,arq);
             if (line[0] == EOF){
+                printf("%d\n",getDeliver());
                 lock = 0;
             } 
             else if (line[strlen(line)-1] == '\0'){
                 setDeliver(1);
+                printf("%s\n",line);
+            }
+
+            else if (line[strlen(line)-1] == '\n'){
+                line[strlen(line)-1] = '\0';
+                printf("%s\n",line);
             }
         }
-        printf("%s\n",line);
 
         if (shouldRun == 1 && lock == 1) {
             int const argsLen = arrayCleaning(line, args);
+
             if (getStyle() == SEQUENTIAL)
             {    
                 for (int i = 0;i < argsLen;i++){
                     char atualArrayArgs[MAX_LINE/2+1];
                     char *newArrayArgs[MAX_LINE/2+1];
+                    
                     strcpy(atualArrayArgs,args[i]);
+
+                    if (strcmp(atualArrayArgs,"!!") != 0){
+                        setLastComand(MAX_LINE, atualArrayArgs);
+                    }
 
                     int newArgsLen = formatArgs(MAX_LINE, atualArrayArgs, newArrayArgs);
                     

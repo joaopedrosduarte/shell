@@ -1,9 +1,18 @@
 #include <stdio.h>
+#include <string.h>
 #include "values.h"
 
-int STYLE = 0;
+int STYLE = 1;
 int DELIVER;
-int *LAST_COMAND;
+char LAST_COMAND[40/2+1];
+
+void setLastComand(int max,char args[max/2+1]){
+    strcpy(LAST_COMAND,args);
+}
+
+char *getLastComand(){
+    return LAST_COMAND;
+}
 
 int isArqAvaiable(FILE *arq,char *array){
     if ((arq = fopen(array,"r"))){

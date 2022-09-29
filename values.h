@@ -8,3 +8,9 @@ int isArqAvaiable(FILE *arq, char *array);
 int getDeliver();
 
 int setDeliver();
+
+void setLastComand(int max, char *args);
+
+char *getLastComand();
+
+void setMaxSize(int num);

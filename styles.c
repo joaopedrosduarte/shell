@@ -12,6 +12,12 @@ int parallel(int max, char *args[max/2+1], int argsLen,int current);
 
 int sequential(int max,char *args[max/2+1], int argsLen, int current)
 {
+    if (strcmp(args[current],"!!") == 0){
+        strcpy(args[current],getLastComand());
+        printf("%s\n",getLastComand());
+        formatArgs(max,args[current],args);
+    }
+
     if (strcmp(args[current],"exit") == 0){
         return 0;
     }
@@ -35,8 +41,8 @@ int sequential(int max,char *args[max/2+1], int argsLen, int current)
             */
         } 
         else if (pid == 0){ // Child Process
-                execvp(args[current],args);
-                exit(pid);
+            execvp(args[current],args);
+            exit(pid);
         } else { // Parent process
             wait(NULL);
         }
@@ -49,7 +55,6 @@ int parallel(int max,char *args[max/2+1], int argsLen,int current)
 {
     pid_t pid;
     int backup = -1;
-    char *commandsOutFork;
 
     char atualArrayArgs[max/2+1];
     char *newArrayArgs[max/2+1];
@@ -57,6 +62,10 @@ int parallel(int max,char *args[max/2+1], int argsLen,int current)
     strcpy(atualArrayArgs,args[0]);
 
     formatArgs(max, atualArrayArgs, newArrayArgs);
+
+    if (strcmp(newArrayArgs[0],"!!") == 0){
+        strcpy(args[current],getLastComand());
+    }
 
     if (strcmp(newArrayArgs[0],"exit") == 0){
         return 0; 
@@ -69,6 +78,7 @@ int parallel(int max,char *args[max/2+1], int argsLen,int current)
             setStyle(0);
         }
     } else {
+
         for (int i = 0;i < argsLen;i++)
         {
             backup++;
@@ -94,7 +104,9 @@ int parallel(int max,char *args[max/2+1], int argsLen,int current)
             if (pid > 0){
                 wait(NULL);
             }
-        }
+        } 
+
+        setLastComand(max, args[argsLen-1]);
     }
 
     return 1;
