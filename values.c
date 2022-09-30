@@ -2,9 +2,20 @@
 #include <string.h>
 #include "values.h"
 
-int STYLE = 1;
+int STYLE = 0;
 int DELIVER;
-char LAST_COMAND[40/2+1];
+char LAST_COMAND[180/2+1] = "No commands";
+
+int hasPipe(int max,char args[max/2+1]){
+    char aux[max/2+1], *slice;
+    strcpy(aux,args);
+    if (strchr(aux,'|')){
+        return 0;
+    } else {
+        return 1;
+    }
+
+}
 
 void setLastComand(int max,char args[max/2+1]){
     strcpy(LAST_COMAND,args);

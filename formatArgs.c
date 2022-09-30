@@ -17,3 +17,12 @@ int formatArgs(int max,char *args, char *arrayArgs[max/2+1]){
 
     return i;
 }
+
+void formatForPipe(int max,char cmd[max], char *args[max]){
+    char *slice;
+
+    slice = strtok(cmd,"|");
+    args[0] = slice;
+    slice = strtok(NULL,"|");
+    args[1] = slice;
+}

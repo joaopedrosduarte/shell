@@ -10,41 +10,94 @@
 int sequential(int max, char *args[max/2+1], int argsLen, int current);
 int parallel(int max, char *args[max/2+1], int argsLen,int current);
 
-int sequential(int max,char *args[max/2+1], int argsLen, int current)
+int sequential(int max,char *args[max/2+1], int argsLen, int isPipe)
 {
-    if (strcmp(args[current],"!!") == 0){
-        strcpy(args[current],getLastComand());
-        printf("%s\n",getLastComand());
-        formatArgs(max,args[current],args);
-    }
+    if (isPipe != 0){
+        char *argsPipe1[max/2+1];
+        char *argsPipe2[max/2+1];
+        argsPipe1[0] = args[0];
+        argsPipe1[1] = args[1];
+        argsPipe2[0] = args[2];
+        argsPipe2[1] = args[3];
 
-    if (strcmp(args[current],"exit") == 0){
-        return 0;
-    }
-    else if (strcmp(args[current],"style") == 0){
-        current++;
-        if (strcmp(args[current],"sequential") == 0){
-            setStyle(0);
-        } 
-        else if (strcmp(args[current],"parallel") == 0){
-            setStyle(1);
-        } else {
-            printf("Style invalido\n");
-        }
-    } else {
-        pid_t pid;
-        pid = fork();
-
-        if (pid < 0){
+        int p[2];
+        if (pipe(p) == -1){
             /*
-            TODO: TRATAMENTO DE ERROS 
+            TODO: TRATAR ERRO DE CRIAÇÃO DE PIPES
             */
         } 
-        else if (pid == 0){ // Child Process
-            execvp(args[current],args);
-            exit(pid);
-        } else { // Parent process
-            wait(NULL);
+        int pidWriter = fork();
+        if (pidWriter == -1){
+            /*
+            TODO: TRATAR ERRO DE CRIAÇÃO DE FILHO ESCRITOR
+            */
+        }
+
+        if (pidWriter == 0){
+            dup2(p[1], STDOUT_FILENO);
+            close(p[0]);
+            close(p[1]);
+            execvp(argsPipe1[0],argsPipe1);
+        }
+
+        int pidReader = fork();
+        if (pidReader == -1){
+            /*
+            TODO: TRATAR ERRO DE CRIAÇÃO DE FILHO LEITOR
+            */
+        } 
+
+        if (pidReader == 0){
+            dup2(p[0], STDIN_FILENO);
+            close(p[0]);
+            close(p[1]);
+            execvp(argsPipe2[0],argsPipe2);
+        }
+
+        close(p[0]);
+        close(p[1]);
+
+        waitpid(pidWriter,NULL,0);
+        waitpid(pidReader,NULL,0);
+        return 1;
+
+    } else {
+        if (strcmp(args[0],"!!") == 0){
+            strcpy(args[0],getLastComand());
+            if (strcmp(getLastComand(),"No commands") == 0){
+                printf("%s\n",getLastComand());
+                return 1;
+            }
+            formatArgs(max,args[0],args);
+        }
+
+        if (strcmp(args[0],"exit") == 0){
+            return 0;
+        }
+        else if (strcmp(args[0],"style") == 0){
+            if (strcmp(args[1],"sequential") == 0){
+                setStyle(0);
+            } 
+            else if (strcmp(args[1],"parallel") == 0){
+                setStyle(1);
+            } else {
+                printf("Style invalido\n");
+            }
+        } else {
+            pid_t pid;
+            pid = fork();
+
+            if (pid < 0){
+                /*
+                TODO: TRATAMENTO DE ERROS 
+                */
+            } 
+            else if (pid == 0){ // Child Process
+                execvp(args[0],args);
+                exit(pid);
+            } else { // Parent process
+                wait(NULL);
+            }
         }
     }
     //getStyle();
